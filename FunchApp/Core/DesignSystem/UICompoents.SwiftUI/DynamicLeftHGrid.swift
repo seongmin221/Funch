@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DynamicHGrid {
+struct DynamicLeftHGrid {
     var itemSpacing: CGFloat
     var lineSpacing: CGFloat
     
@@ -18,7 +18,7 @@ struct DynamicHGrid {
     }
 }
 
-extension DynamicHGrid: Layout {
+extension DynamicLeftHGrid: Layout {
     /// DynamicGrid의 사이즈를 계산하는 함수
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let width = proposal.replacingUnspecifiedDimensions().width
@@ -36,7 +36,7 @@ extension DynamicHGrid: Layout {
     }
 }
 
-extension DynamicHGrid {
+extension DynamicLeftHGrid {
     /// 레이아웃을 계산해서 부모 뷰가 제시해 주는 크기 내부에 들어가는 사이즈 중
     /// 가장 fit 한 사이즈와 내부에 들어갈 subview 들의 위치를 계산하는 함수입니다.
     /// - offsets: subview 들 위치
