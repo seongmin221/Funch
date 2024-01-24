@@ -57,6 +57,7 @@
 		3EA69C302B5F973A008AE23B /* MatchResultOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA69C2F2B5F973A008AE23B /* MatchResultOverviewView.swift */; };
 		3EA69C322B5F9E8D008AE23B /* MatchResultConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA69C312B5F9E8D008AE23B /* MatchResultConversationView.swift */; };
 		3EA69C342B61579D008AE23B /* MatchResultOpponentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA69C332B61579D008AE23B /* MatchResultOpponentView.swift */; };
+		3EA69C362B61592E008AE23B /* DynamicCenterHGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA69C352B61592E008AE23B /* DynamicCenterHGrid.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,6 +111,7 @@
 		3EA69C2F2B5F973A008AE23B /* MatchResultOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchResultOverviewView.swift; sourceTree = "<group>"; };
 		3EA69C312B5F9E8D008AE23B /* MatchResultConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchResultConversationView.swift; sourceTree = "<group>"; };
 		3EA69C332B61579D008AE23B /* MatchResultOpponentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchResultOpponentView.swift; sourceTree = "<group>"; };
+		3EA69C352B61592E008AE23B /* DynamicCenterHGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicCenterHGrid.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -432,6 +434,7 @@
 				1ACE498C2B5C111500024336 /* ChipView.swift */,
 				3EA69BFE2B5C342E008AE23B /* FunchTextField.swift */,
 				3EA69C002B5D61E9008AE23B /* DynamicLeftHGrid.swift */,
+				3EA69C352B61592E008AE23B /* DynamicCenterHGrid.swift */,
 			);
 			path = UICompoents.SwiftUI;
 			sourceTree = "<group>";
@@ -535,6 +538,7 @@
 				1ACE493E2B5B9D0B00024336 /* ContentView.swift in Sources */,
 				1ACE49582B5B9ECE00024336 /* MatchResultView.swift in Sources */,
 				1A7B06922B5D67250024356C /* SubwayStationRepositoryType.swift in Sources */,
+				3EA69C362B61592E008AE23B /* DynamicCenterHGrid.swift in Sources */,
 				3EA69C322B5F9E8D008AE23B /* MatchResultConversationView.swift in Sources */,
 				1A7B06902B5D669A0024356C /* SubwayStationRepository.swift in Sources */,
 				1ACE49752B5BA2A100024336 /* MatchResultUseCase.swift in Sources */,
