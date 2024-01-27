@@ -21,6 +21,9 @@ final class HomeViewModel: ObservableObject {
 struct HomeView: View {
     @StateObject var viewModel = HomeViewModel()
     
+    @State var showsMatchResultView: Bool = false
+    @State var showsProfileView: Bool = false
+    
     init() {
         UINavigationBar.appearance().backgroundColor = .orange
     }
@@ -62,6 +65,13 @@ struct HomeView: View {
                 
             }
         }
+        .sheet(isPresented: $showsMatchResultView, content: {
+            MatchResultView()
+        })
+        .navigationDestination(isPresented: $showsProfileView, destination: {
+            ProfileView()
+        })
+        .navigationBarBackButtonHidden()
     }
     
     /// 코드 검색영역
@@ -82,6 +92,9 @@ struct HomeView: View {
             
             TextField("여기 성민이 텍스트 필드로 교체할 것", text: $viewModel.state.serachCodeText)
                 .background(.blue)
+                .onSubmit {
+                    showsMatchResultView.toggle()
+                }
         }
         .padding(.vertical, 24)
         .padding(.horizontal, 16)
@@ -140,6 +153,9 @@ struct HomeView: View {
         .background(.red)
         .clipShape(RoundedRectangle(cornerRadius: 16.0))
         .padding(.trailing, 20)
+        .onTapGesture {
+            showsProfileView.toggle()
+        }
     }
     
     /// 프로필 조회수 영역

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @State private var showsProfileEdiorView: Bool = false
+    
     var body: some View {
         VStack(spacing: 0) {
             Text("친구와 프로필 매칭하기")
@@ -36,18 +38,24 @@ struct OnboardingView: View {
             
             Spacer()
                 .frame(height: 8)
+
             
             Button {
-                // action
+                showsProfileEdiorView.toggle()
             } label: {
                 Text("프로필 생성 시작🚀")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.white)
             }
             .buttonStyle(.funch)
+            
         }
         .padding(.horizontal, 57)
-        
+        .navigationDestination(isPresented: $showsProfileEdiorView) {
+            ProfileEditorView()
+        }
+        .navigationTitle("e")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

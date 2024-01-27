@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProfileEditorView: View {
     
+    @State var showsHomeView: Bool = false
     @State var profile: Profile = .emptyValue
     
     var body: some View {
@@ -53,6 +54,7 @@ struct ProfileEditorView: View {
             
             matchingButtonView
         }
+        .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -69,6 +71,9 @@ struct ProfileEditorView: View {
             }
         }
         .ignoresSafeArea(edges: .bottom)
+        .navigationDestination(isPresented: $showsHomeView) {
+            HomeView()
+        }
     }
     
     
@@ -79,7 +84,7 @@ struct ProfileEditorView: View {
                 .frame(height: 16)
             
             Button {
-                /* action */
+                showsHomeView.toggle()
             } label: {
                 Text("이제 매칭할래요!")
                     .font(.system(size: 18))
