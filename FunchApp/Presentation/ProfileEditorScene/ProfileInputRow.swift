@@ -57,7 +57,7 @@ struct ProfileInputRow: View {
                            placeholderText: "최대 00글자")
             
         case .직군:
-            DynamicHGrid(itemSpacing: 8, lineSpacing: 8) {
+            DynamicLeftHGrid(itemSpacing: 8, lineSpacing: 8) {
                 ForEach(Profile.Major.dummies, id: \.self) { major in
                     Button {
                         if profile.major.isEmpty { profile.major.append(major) }
@@ -78,7 +78,7 @@ struct ProfileInputRow: View {
             
         case .동아리:
             var selectedClubs: Set<Profile.Club> = Set()
-            DynamicHGrid(itemSpacing: 8, lineSpacing: 8) {
+            DynamicLeftHGrid(itemSpacing: 8, lineSpacing: 8) {
                 ForEach(Profile.Club.dummies, id: \.self) { club in
                     Button {
                         if selectedClubs.contains(club) { selectedClubs.remove(club) }
@@ -103,7 +103,7 @@ struct ProfileInputRow: View {
             /// Profile.MBTI에 적용될 값들입니다. 각각 쌍으로 매칭해두었습니다.
             // FIXME: 나중에 다른 곳에 빼두면 좋을 것 같아요
             let mbtiPairData: [[String]] = [["E", "I"], ["N", "S"], ["F", "T"], ["P", "J"]]
-            DynamicHGrid(itemSpacing: 8, lineSpacing: 8) {
+            DynamicLeftHGrid(itemSpacing: 8, lineSpacing: 8) {
                 ForEach(0..<4) { pairIndex in
                     ProfileMBTIButtonPair(onTap: { index in
                         selectedMBTI[pairIndex] = mbtiPairData[pairIndex][index]
