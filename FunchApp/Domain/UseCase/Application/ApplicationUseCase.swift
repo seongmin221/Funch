@@ -27,4 +27,12 @@ final class ApplicationUseCase: ApplicationUseCaseType {
         get { userStorage.profiles }
         set { userStorage.profiles = newValue }
     }
+    
+    var userCode: String {
+        get { userStorage.profiles.last?.userCode ?? "" }
+    }
+    
+    var viewerShip: String {
+        get { userStorage.profiles.last?.viewerShip ?? "--" }
+    }
 }

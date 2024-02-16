@@ -11,41 +11,85 @@ final class HomeViewModel: ObservableObject {
     
     @Published var state = State()
     @Published var presentation: State.PresentationState?
+    @Published var matchResult: MatchingInfo?
     
     /// 상태
     struct State {
         /// 코드 검색 텍스트 필드
-        var serachCodeText: String = ""
+        var searchCodeText: String = ""
+        var showFailureAlert: Bool = false
+        var myCode: String = ""
+        var viewerShip: String = ""
+        var isLoaded: Bool = false
         
         enum PresentationState: Int, Identifiable, Equatable {
             var id: Int { self.rawValue }
             
             case profile
+            case matchResult
         }
     }
         
     enum Action: Equatable {
+        case matchUser
+        case myCode
+        case viewerShip
         case feedback
-        
+        case dismissAlert
+        case loadCompleted
         case presentation(PresentationAction)
         
         enum PresentationAction: Int, Identifiable, Equatable {
             var id: Int { self.rawValue }
             
             case profile
+            case matchResult
         }
     }
     
+    private let applicationUseCase: ApplicationUseCase = .init(userStorage: .shared)
+    private let homeUseCase: HomeUseCase = .init()
     private let openURL: OpenURL = .init()
     
     func send(action: Action) {
         switch action {
+        case .matchUser:
+            homeUseCase.searchUser(
+                requestId: applicationUseCase.userCode,
+                targetUserCode: state.searchCodeText
+            ) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let matchingInfo):
+                    print(matchingInfo)
+                    send(action: .loadCompleted)
+                case .failure(_):
+                    state.showFailureAlert = true
+                }
+            }
+            
+        case .myCode:
+            state.myCode = applicationUseCase.userCode
+            
+        case .viewerShip:
+            state.viewerShip = applicationUseCase.viewerShip
+            
+        case .dismissAlert:
+            state.showFailureAlert = false
+            
         case .feedback:
             openURL.execute(type: .feedback)
+            
+        case .loadCompleted:
+            state.isLoaded = true
+            
         case let .presentation(presentationAction):
             switch presentationAction {
             case .profile:
                 presentation = .profile
+                
+            case .matchResult:
+                presentation = .matchResult
             }
         }
     }
@@ -84,12 +128,26 @@ struct HomeView: View {
                 Spacer()
             }
             .padding(.horizontal, 20)
+            .onTapGesture {
+                hideKeyboard()
+            }
+        }
+        .alert(isPresented: $viewModel.state.showFailureAlert) {
+            Alert(
+                title: Text("매칭 실패"),
+                dismissButton: .cancel { viewModel.send(action: .dismissAlert)}
+            )
         }
         .fullScreenCover(item: $viewModel.presentation) { presentation in
             switch presentation {
             case .profile:
                 NavigationStack { 
                     ProfileView()
+                }
+                
+            case .matchResult:
+                NavigationStack {
+                    
                 }
             }
         }
@@ -129,12 +187,12 @@ struct HomeView: View {
                 .frame(height: 16)
             
             FunchTextField(
-                text: $viewModel.state.serachCodeText,
+                text: $viewModel.state.searchCodeText,
                 placeholderText: "친구 코드를 입력하고 매칭하기",
                 backgroundColor: .gray700,
                 trailingButtonImage: Image(.iconSearchYellow), 
                 onButtonTap: {
-                    // FIXME: api 통신
+                    viewModel.send(action: .matchUser)
                 }
             )
         }
@@ -151,9 +209,9 @@ struct HomeView: View {
     /// 내 코드가 나타나는 영역
     private var myCodeView: some View {
         HStack(spacing: 0) {
-            Image(systemName: "plus")
+            Image(.code)
+                .resizable()
                 .frame(width: 40, height: 40)
-                .foregroundStyle(.gray400)
             
             Spacer()
                 .frame(width: 12)
@@ -163,9 +221,12 @@ struct HomeView: View {
                     .font(.Funch.body)
                     .foregroundStyle(.gray400)
                 
-                Text("U23S")
+                Text(viewModel.state.myCode)
                     .font(.Funch.subtitle2)
                     .foregroundStyle(Gradient.funchGradient(type: .lemon500))
+                    .onAppear {
+                        viewModel.send(action: .myCode)
+                    }
             }
             
             Spacer()
@@ -180,8 +241,8 @@ struct HomeView: View {
     /// 내 프로필 영역
     private var myProfileView: some View {
         VStack(spacing: 0) {
-            Image(systemName: "plus")
-                .foregroundStyle(.gray400)
+            Image(.profile)
+                .resizable()
                 .frame(width: 40, height: 40)
             
             Spacer()
@@ -199,9 +260,9 @@ struct HomeView: View {
     /// 프로필 조회수 영역
     private var lookupCountView: some View {
         HStack(spacing: 0) {
-            Image(systemName: "plus")
+            Image(.look)
+                .resizable()
                 .frame(width: 40, height: 40)
-                .foregroundStyle(.gray400)
             
             Spacer()
                 .frame(width: 12)
@@ -211,9 +272,12 @@ struct HomeView: View {
                     .font(.Funch.body)
                     .foregroundStyle(.gray400)
                 
-                Text("00명이 조회했어요.")
+                Text("\(viewModel.state.viewerShip)명이 조회했어요.")
                     .font(.Funch.subtitle2)
                     .foregroundStyle(.white)
+                    .onAppear {
+                        viewModel.send(action: .viewerShip)
+                    }
             }
             
             Spacer()

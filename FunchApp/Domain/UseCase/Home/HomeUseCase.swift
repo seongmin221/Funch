@@ -33,15 +33,15 @@ final class HomeUseCase {
     /// `상대 프로필` 검색
     func searchUser(requestId: String,
                     targetUserCode: String,
-                    completion: @escaping (Profile) -> Void) {
+                    completion: @escaping (Result<MatchingInfo, Error>) -> Void) {
         let searchUserQuery = MatchingUserQuery(requestId: requestId, targetUserCode: targetUserCode)
         matchingRepository.matchingUser(searchUserQuery: searchUserQuery) { result in
             switch result {
-            case .success(let success):
-//                completion()
+            case .success(let matchingInfo):
+                completion(.success(matchingInfo))
                 break
-            case .failure(let failure):
-//                completion()
+            case .failure(let error):
+                completion(.failure(error))
                 break
             }
         }
