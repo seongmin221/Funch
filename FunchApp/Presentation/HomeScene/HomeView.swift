@@ -128,9 +128,9 @@ struct HomeView: View {
                 Spacer()
             }
             .padding(.horizontal, 20)
-            .onTapGesture {
-                hideKeyboard()
-            }
+        }
+        .onTapGesture {
+            hideKeyboard()
         }
         .alert(isPresented: $viewModel.state.showFailureAlert) {
             Alert(
@@ -164,7 +164,6 @@ struct HomeView: View {
                         .background(.black)
                         .clipShape(RoundedRectangle(cornerRadius: 12.0))
                 }
-                
             }
         }
     }
