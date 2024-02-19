@@ -117,7 +117,7 @@ final class ProfileEditorViewModel: ObservableObject {
                 send(action: .focusField(.clubs))
                 
             case .mbti(let selection):
-                mbti[selection[0]] = Profile.mbtiPair[selection[0]][selection[1]]
+                mbti[selection[0]] = MBTI.pairs[selection[0]][selection[1]]
                 send(action: .focusField(.mbti))
                 
             case .bloodType(let selectedType):

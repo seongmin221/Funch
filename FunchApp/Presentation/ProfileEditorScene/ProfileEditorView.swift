@@ -219,8 +219,8 @@ extension ProfileEditorView {
                             action: {
                                 viewModel.send(action: .inputProfile(.mbti([pairIndex, letterIndex])))
                             },
-                            title: Profile.mbtiPair[pairIndex][letterIndex],
-                            isSelected: viewModel.mbti.contains(Profile.mbtiPair[pairIndex][letterIndex])
+                            title: MBTIPair.pairs[pairIndex][letterIndex],
+                            isSelected: viewModel.mbti.contains(MBTIPair.pairs[pairIndex][letterIndex])
                         )
                     }
                 }
