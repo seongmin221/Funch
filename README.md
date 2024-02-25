@@ -1,5 +1,14 @@
 # Funch: 즐거운 첫 만남 도우미
 
+<img width="200" alt="IOS_screenshot_1248_2778_1" src="https://github.com/seongmin221/funch-portfolio/assets/72431640/0bf94bdd-6faa-4d4a-b6fe-a179eaaf5855">
+<img width="200" alt="IOS_screenshot_1248_2778_2" src="https://github.com/seongmin221/funch-portfolio/assets/72431640/3a40e00e-75be-4fe4-8f0e-4300d89a8d2a">
+<img width="200" alt="IOS_screenshot_1248_2778_3" src="https://github.com/seongmin221/funch-portfolio/assets/72431640/890c31c8-176b-4cae-8925-256eab575cca">
+<img width="200" alt="IOS_screenshot_1248_2778_4" src="https://github.com/seongmin221/funch-portfolio/assets/72431640/c1ed3630-b314-410b-a1e5-d734463c4848">
+
+
+
+
+
 ## Overview
 - 프로젝트 소개
   - v1.0.0
