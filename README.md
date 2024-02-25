@@ -9,7 +9,7 @@
 
 
 
-## Overview
+## 💥 Overview
 - 프로젝트 소개
   - v1.0.0
     - 처음 모임, 동아리에서 만나는 사람과 대화 주제를 찾기 위한 개인 프로필을 생성할 수 있습니다
@@ -30,7 +30,7 @@
 
 <br>
 
-## Main Contributions
+## ✏️ Main Contributions
 ### Layout Protocol을 따르는 커스텀 레이아웃 구현
 
 <img width="300" alt="image" src="https://github.com/seongmin221/funch-portfolio/assets/72431640/99ff1639-d1eb-4821-b453-1a5675cf6b74">
