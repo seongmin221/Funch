@@ -5,24 +5,10 @@
 //  Created by 이성민 on 2/19/24.
 //
 
-import Foundation
 import SwiftUI
 import Combine
 
 final class ProfileEditorViewModel: ObservableObject {
-    
-    @Published var presentation: PresentationState?
-    @Published var subwaySearchText: String = ""
-    @Published var focusedField: InputField?
-    
-    @Published var userNickname: String = ""
-    @Published var majors: [Profile.Major] = []
-    @Published var clubs: [Profile.Club] = []
-    @Published var mbti: [String] = .init(repeating: "", count: 4)
-    @Published var bloodType: String = "A"
-    @Published var searchedSubwayInfo: [SubwayInfo] = []
-    @Published var subwayInfo: [SubwayInfo] = []
-    @Published var isEnabled: Bool = false
     
     enum Action: Equatable {
         case onChangeProfile
@@ -31,12 +17,6 @@ final class ProfileEditorViewModel: ObservableObject {
         case subwaySearch
         case makeProfile
         case feedback
-        
-        enum PresentationAction: Int, Identifiable, Equatable {
-            var id: Int { self.rawValue }
-            
-            case home
-        }
         
         enum InputType: Equatable {
             case nickname(String)
@@ -48,23 +28,37 @@ final class ProfileEditorViewModel: ObservableObject {
         }
     }
     
-    enum PresentationState: Int, Identifiable, Equatable {
-        var id: Int { self.rawValue }
-        
-        case home
-    }
-    
     enum InputField {
         case nickname, major, clubs, mbti, bloodType, subway
     }
     
+    @Published var subwaySearchText: String = ""
+    @Published var focusedField: InputField?
+    
+    @Published var userNickname: String = ""
+    @Published var majors: [Profile.Major] = []
+    @Published var clubs: [Profile.Club] = []
+    @Published var mbti: [String] = .init(repeating: "", count: 4)
+    @Published var bloodType: String = "A"
+    @Published var searchedSubwayInfo: [SubwayInfo] = []
+    @Published var subwayInfo: [SubwayInfo] = []
+    @Published var isEnabled: Bool = false
+    @Published var presentation: ProfileEditorPresentation?
+    
     private var container: DependencyType
-    private var useCase: CreateProfileUseCaseType
+    private var useCase = UseCase()
+    
+    struct UseCase {
+        var createProfile = DefaultCreateProfileUseCase()
+        var searchSubway = DefaultSearchSubwayUseCase()
+    }
+    
     private var cancellables = Set<AnyCancellable>()
     
-    init(container: DependencyType, useCase: CreateProfileUseCaseType) {
+    
+    
+    init(container: DependencyType) {
         self.container = container
-        self.useCase = useCase
         
         bind()
     }
@@ -133,29 +127,27 @@ final class ProfileEditorViewModel: ObservableObject {
         
         case .subwaySearch:
             let query = SearchSubwayStationQuery(searchText: subwaySearchText)
-            useCase.searchSubway(query: query) { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case .success(let subwayInfos):
+            useCase.searchSubway.execute(query: query)
+                .sink { [weak self] completion in
+                    guard let self else { return }
+                    if case .failure = completion {
+                        self.searchedSubwayInfo = []
+                    }
+                } receiveValue: { [weak self] subwayInfos in
+                    guard let self else { return }
                     self.searchedSubwayInfo = subwayInfos
-                case .failure(_):
-                    self.searchedSubwayInfo = []
-                }
-            }
+                }.store(in: &cancellables)
             
         case .makeProfile:
             let query = makeCreateUserQuery()
-            useCase.createProfile(createUserQuery: query) { [weak self] result in
-                switch result {
-                case .success(let profile):
+            useCase.createProfile.createProfile(query: query)
+                .sink { _ in
+                    
+                } receiveValue: { [weak self] profile in
                     guard let self else { return }
                     self.container.services.userService.profiles.append(profile)
                     self.presentation = .home
-                    
-                case .failure(_):
-                    break
-                }
-            }
+                }.store(in: &cancellables)
             
         case .feedback:
             container.services.openURLSerivce.execute(type: .feedback)
