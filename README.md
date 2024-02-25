@@ -133,14 +133,20 @@ extension DynamicHGrid {
 
 ## 🔩 Tech & Skills
 
+<img src="https://img.shields.io/badge/SwiftUI-blue" height="30"> <img src="https://img.shields.io/badge/Combine-blue" height="30"> <img src="https://img.shields.io/badge/CleanArchitecture-blue" height="30"> 
 
+<img src="https://img.shields.io/badge/Figma-orange" height="30">
 
+<img src="https://img.shields.io/badge/Discord-yellow" height="30"> <img src="https://img.shields.io/badge/Notion-yellow" height="30">
+
+<br>
+
+<br>
 
 
 ## 🛠 Development Environment
 
- 
-
+<img src="https://img.shields.io/badge/iOS-16+-white" height="30"> <img src="https://img.shields.io/badge/Xcode-15.2-blue" height="30">
 
 
 
