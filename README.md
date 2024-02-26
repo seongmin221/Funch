@@ -142,10 +142,8 @@ extension DynamicHGrid {
 
 ## 🔩 Tech & Skills
 
-<img src="https://img.shields.io/badge/SwiftUI-blue" height="30"> <img src="https://img.shields.io/badge/Combine-blue" height="30"> <img src="https://img.shields.io/badge/CleanArchitecture-blue" height="30"> 
-
-<img src="https://img.shields.io/badge/Figma-orange" height="30">
-
+<img src="https://img.shields.io/badge/SwiftUI-blue" height="30"> <img src="https://img.shields.io/badge/Combine-blue" height="30"> <img src="https://img.shields.io/badge/CleanArchitecture-blue" height="30"> <br>
+<img src="https://img.shields.io/badge/Figma-orange" height="30"> <br>
 <img src="https://img.shields.io/badge/Discord-yellow" height="30"> <img src="https://img.shields.io/badge/Notion-yellow" height="30">
 
 <br>
