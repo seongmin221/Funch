@@ -45,20 +45,22 @@ final class ProfileEditorViewModel: ObservableObject {
     @Published var isEnabled: Bool = false
     @Published var presentation: ProfileEditorPresentation?
     
-    private var container: DependencyType
-    private var useCase = UseCase()
+    private var useCase: UseCase
+    private var inject: DIContainer.Inject
     
     struct UseCase {
-        var createProfile = DefaultCreateProfileUseCase()
-        var searchSubway = DefaultSearchSubwayUseCase()
+        var createProfile: DefaultCreateProfileUseCase
+        var searchSubway: DefaultSearchSubwayUseCase
     }
     
     private var cancellables = Set<AnyCancellable>()
     
-    
-    
-    init(container: DependencyType) {
-        self.container = container
+    init(
+        useCase: UseCase,
+        inject: DIContainer.Inject
+    ) {
+        self.useCase = useCase
+        self.inject = inject
         
         bind()
     }
@@ -145,12 +147,16 @@ final class ProfileEditorViewModel: ObservableObject {
                     
                 } receiveValue: { [weak self] profile in
                     guard let self else { return }
-                    self.container.services.userService.profiles.append(profile)
+                    self.inject.userStorage.profiles.insert(profile)
                     self.presentation = .home
                 }.store(in: &cancellables)
             
         case .feedback:
-            container.services.openURLSerivce.execute(type: .feedback)
+            do {
+                try inject.openUrl.feedback()
+            } catch {
+             
+            }
             
         }
     }

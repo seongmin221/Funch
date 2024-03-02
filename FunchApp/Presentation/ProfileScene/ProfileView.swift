@@ -10,10 +10,9 @@ import SwiftUI
 struct ProfileView: View {
     
     @Environment(\.dismiss) var dismiss
+    
     @EnvironmentObject var appCoordinator: AppCoordinator
     @StateObject var viewModel: ProfileViewModel
-    
-    @State private var showingAlert: Bool = false
     
     var body: some View {
         ZStack {
@@ -48,22 +47,42 @@ struct ProfileView: View {
                 }
             }
         }
-        .alert("프로필 삭제하기", isPresented: $showingAlert, actions: {
-            Button(role: .cancel) {
-                showingAlert = false
-            } label: {
-                Text("취소하기")
+        .alert("", isPresented: $viewModel.showsAlert) {
+            switch viewModel.alertMessage {
+            case .deleteProile:
+                Button(role: .cancel) {
+                    
+                } label: {
+                    Text("취소하기")
+                }
+                
+                Button(role: .destructive) {
+                    viewModel.send(action: .deleteProfile)
+                } label: {
+                    Text("삭제하기")
+                }
+                
+            case .feedbackFailed(_):
+                Button(role: .cancel) {
+                    
+                } label: {
+                    Text("OK")
+                }
+                
+            case .none:
+                EmptyView()
             }
             
-            Button(role: .destructive) {
-                viewModel.send(action: .deleteProfile)
-                // viewModel과 연결
-            } label: {
-                Text("삭제하기")
+        } message: {
+            switch viewModel.alertMessage {
+            case .deleteProile:
+                Text("기존 프로필이 삭제되고 복구가 불가능해요.\n정말 삭제하실 건가요?")
+            case let .feedbackFailed(message):
+                Text(message)
+            case .none:
+                EmptyView()
             }
-        }, message: {
-            Text("기존 프로필이 삭제되고 복구가 불가능해요.\n정말 삭제하실 건가요?")
-        })
+        }
         .onAppear {
             viewModel.send(action: .load)
         }
@@ -76,6 +95,8 @@ struct ProfileView: View {
             switch presentation {
             case .onboarding:
                 appCoordinator.paths.removeAll()
+            case .home:
+                dismiss()
             default:
                 break
             }
@@ -170,7 +191,7 @@ struct ProfileView: View {
     
     private var deleteUserButton: some View {
         Button {
-            showingAlert = true
+            viewModel.send(action: .alert(.deleteProile))
         } label: {
             Text("프로필 삭제하기")
                 .font(.Funch.body)
@@ -182,9 +203,4 @@ struct ProfileView: View {
         .frame(height: 36)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
-}
-
-#Preview {
-    @StateObject var container = DIContainer(services: Services())
-    return ProfileViewBuilder(container: container).body
 }

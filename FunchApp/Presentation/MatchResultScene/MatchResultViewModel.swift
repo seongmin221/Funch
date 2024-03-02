@@ -33,11 +33,14 @@ final class MatchResultViewModel: ObservableObject {
         }
     }
     
-    private var container: DependencyType
     private let matchingInfo: MatchingInfo
+    private var inject: DIContainer.Inject
     
-    init(container: DependencyType, matchingInfo: MatchingInfo) {
-        self.container = container
+    init(
+        inject: DIContainer.Inject,
+        matchingInfo: MatchingInfo
+    ) {
+        self.inject = inject
         self.matchingInfo = matchingInfo
     }
     

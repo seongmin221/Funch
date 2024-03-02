@@ -15,30 +15,45 @@ final class ProfileViewModel: ObservableObject {
         case loadFailed
         case deleteProfile
         case feedback
+        case alert(Alert)
+    }
+    
+    enum Alert {
+        case deleteProile
+        case feedbackFailed(String)
     }
     
     enum PresentationState {
         case onboarding
+        case home
     }
     
     @Published var presentation: PresentationState?
     @Published var profile: Profile?
     @Published var dismiss: Bool = false
+    @Published var alertMessage: Alert?
+
+    // MAKR: - Alert
+    @Published var showsAlert: Bool = false
+    @Published var alertFeedbackFailed: Bool = false
     
-    private var container: DependencyType
     private var useCase: DeleteProfileUseCase
+    private var inject: DIContainer.Inject
     
     private var cancellables = Set<AnyCancellable>()
     
-    init(container: DependencyType, useCase: DeleteProfileUseCase) {
-        self.container = container
+    init(
+        useCase: DeleteProfileUseCase,
+        inject: DIContainer.Inject
+    ) {
         self.useCase = useCase
+        self.inject = inject
     }
     
     func send(action: Action) {
         switch action {
         case .load:
-            guard let profile = container.services.userService.profiles.last else {
+            guard let profile = inject.userStorage.selectionProfile else {
                 self.send(action: .loadFailed)
                 return
             }
@@ -48,23 +63,39 @@ final class ProfileViewModel: ObservableObject {
             dismiss = true
             
         case .deleteProfile:
-            guard let userId = profile?.id else {
-                // TODO: 내가 프로필이 없다면 ?
-                return
-            }
+            guard let userId = profile?.userId else { return }
             
             useCase.execute(requestId: userId)
                 .sink { _ in
                     
-                } receiveValue: { [weak self] deletedId in
+                } receiveValue: { [weak self] _ in
                     guard let self else { return }
-                    self.container.services.userService.profiles = []
-                    self.presentation = .onboarding
+                    guard let profile else { return }
+                    
+                    self.inject.userStorage.profiles.remove(profile)
+                    self.inject.userStorage.selectionProfile = nil
+                    
+                    if self.inject.userStorage.profiles.count == 0 {
+                        self.presentation = .onboarding
+                    } else {
+                        self.presentation = .home
+                    }
+                    
                 }
                 .store(in: &cancellables)
             
         case .feedback:
-            container.services.openURLSerivce.execute(type: .feedback)
+            do {
+                try inject.openUrl.feedback()
+            } catch let error {
+                showsAlert = true
+                alertMessage = .feedbackFailed(error.localizedDescription)
+            }
+            
+        case let .alert(type):
+            showsAlert = true
+            alertMessage = type
         }
+        
     }
 }

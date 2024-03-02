@@ -7,23 +7,26 @@
 
 import SwiftUI
 
-struct MatchResultViewBuilder: Buildable {
+struct MatchResultViewBuilder {
     
-    var container: DependencyType
+    private var diContainer: DIContainer
+    
     /// 매칭된 타인의 프로필
     private var matchingInfo: MatchingInfo
     
     init(
-        container: DependencyType,
+        diContainer: DIContainer,
         matchingInfo: MatchingInfo
     ) {
-        self.container = container
+        self.diContainer = diContainer
         self.matchingInfo = matchingInfo
     }
     
     var body: some View {
-        // !!!: - 매칭 프로필에 다른 사람 프로필 넣어주세요.
-        let viewModel = MatchResultViewModel(container: container, matchingInfo: matchingInfo)
+        let viewModel = MatchResultViewModel(
+            inject: diContainer.inject,
+            matchingInfo: matchingInfo
+        )
         let view = MatchResultView(viewModel: viewModel)
         
         return view

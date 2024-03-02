@@ -11,6 +11,7 @@ import SwiftUIPager
 struct MatchResultView: View {
     
     @Environment(\.dismiss) var dismiss
+    
     @StateObject var viewModel: MatchResultViewModel
     @StateObject var page: Page = .first()
     
@@ -237,11 +238,4 @@ struct MatchResultView: View {
             }
         }
     }
-    
-    
-}
-
-#Preview {
-    @StateObject var container = DIContainer(services: Services())
-    return MatchResultView(viewModel: .init(container: container, matchingInfo: .testableValue))
 }

@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct HomeView: View {
+    
     @EnvironmentObject var appCoordinator: AppCoordinator
-    @EnvironmentObject var container: DIContainer
+    @EnvironmentObject var diContainer: DIContainer
     
     @StateObject var viewModel: HomeViewModel
     
@@ -70,11 +71,29 @@ struct HomeView: View {
             }
             .padding(.horizontal, 20)
         }
-        .alert("존재하지 않는 사용자입니다", isPresented: $viewModel.showingAlert, actions: {
-            Button {
-                // do not action
-            } label: {
-                Text("닫기")
+        .alert("", isPresented: $viewModel.showsAlert, actions: {
+            switch viewModel.alertMessage {
+            case .failedMatchingProfile(_):
+                Button(role: .cancel) {
+                } label: {
+                    Text("OK")
+                }
+            case .failedFeedback(_):
+                Button(role: .cancel) {
+                } label: {
+                    Text("OK")
+                }
+            case .none:
+                EmptyView()
+            }
+        }, message: {
+            switch viewModel.alertMessage {
+            case let .failedMatchingProfile(message):
+                Text(message)
+            case let .failedFeedback(message):
+                Text(message)
+            case .none:
+                EmptyView()
             }
         })
         .onAppear {
@@ -87,20 +106,45 @@ struct HomeView: View {
             switch presentation {
             case .profile:
                 NavigationStack {
-                    ProfileViewBuilder(container: container).body
+                    ProfileViewBuilder(diContainer: diContainer).body
+                }
+                .onDisappear {
+                    viewModel.send(action: .load)
                 }
             case let .matchResult(matchingInfo):
                 NavigationStack {
-                    MatchResultViewBuilder(container: container, matchingInfo: matchingInfo).body
+                    MatchResultViewBuilder(
+                        diContainer: diContainer,
+                        matchingInfo: matchingInfo
+                    ).body
                 }
             case .mbtiCollection:
                 NavigationStack {
-                    MBTIBoardViewBuilder(container: container).body
+                    MBTIBoardViewBuilder(diContainer: diContainer).body
+                }
+            case .easterEgg:
+                NavigationStack {
+                    EasterEggViewBuilder(diContainer: diContainer).body
+                }
+            case .multiProfile:
+                NavigationStack {
+                    MultiProfileListViewBuilder(diContainer: diContainer).body
+                }
+                .onDisappear {
+                    viewModel.send(action: .load)
                 }
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button {
+                    viewModel.send(action: .presentation(.multiProfile))
+                } label: {
+                    Image(systemName: "person.2")
+                        .resizable()
+                        .foregroundColor(.lemon500)
+                }
+                
                 Button {
                     viewModel.send(action: .feedback)
                 } label: {
@@ -112,7 +156,6 @@ struct HomeView: View {
                         .background(.gray800)
                         .clipShape(RoundedRectangle(cornerRadius: 12.0))
                 }
-                
             }
         }
     }
@@ -181,6 +224,16 @@ struct HomeView: View {
             }
             
             Spacer()
+            
+            ShareLink(
+                item: viewModel.shareLink.item,
+                message: viewModel.shareLink.message(userCode: viewModel.profile?.userCode ?? "")
+            ) {
+                Image(systemName: "square.and.arrow.up.circle.fill")
+                    .resizable()
+                    .frame(width: 28, height: 28)
+                    .foregroundColor(.lemon500)
+            }
         }
         .padding(.horizontal, 16)
         .frame(height: 92)

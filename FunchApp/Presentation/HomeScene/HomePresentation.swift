@@ -13,4 +13,6 @@ enum HomePresentation: Hashable, Identifiable {
     case profile
     case matchResult(MatchingInfo)
     case mbtiCollection
+    case easterEgg
+    case multiProfile
 }

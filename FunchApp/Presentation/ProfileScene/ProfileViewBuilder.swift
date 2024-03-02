@@ -7,18 +7,21 @@
 
 import SwiftUI
 
-struct ProfileViewBuilder: Buildable {
-    var container: DependencyType
+struct ProfileViewBuilder {
     
-    init(container: DependencyType) {
-        self.container = container
+    private var diContainer: DIContainer
+    
+    init(diContainer: DIContainer) {
+        self.diContainer = diContainer
     }
     
     var body: some View {
-        let useCase = DefaultDeleteProfileUseCase()
-        let viewModel = ProfileViewModel(container: container, useCase: useCase)
+        let useCase = DefaultDeleteProfileUseCase(profileRepository: diContainer.profileRepository)
+        let viewModel = ProfileViewModel(
+            useCase: useCase,
+            inject: diContainer.inject
+        )
         let view = ProfileView(viewModel: viewModel)
-        
         return view
     }
 }

@@ -10,27 +10,28 @@ import SwiftUI
 @main
 struct FunchApp: App {
     @StateObject private var appCoordinator = AppCoordinator()
-    @StateObject private var container: DIContainer = .init(services: Services())
+    @StateObject private var diContainer = DIContainer()
     
     @State private var isSplashing: Bool = true
     
+    init() {
+        setupNavigationBarAppearance()
+    }
+    
     var body: some Scene {
-//        WindowGroup {
-//            mbtiBoardView()
-//        }
         WindowGroup {
             ZStack {
                 NavigationStack(path: $appCoordinator.paths) {
-                    if !container.services.userService.profiles.isEmpty {
-                        HomeViewBuilder(container: container).body
+                    if !diContainer.inject.userStorage.profiles.isEmpty {
+                        HomeViewBuilder(diContainer: diContainer).body
                     } else {
-                        OnboardingViewBuilder(container: container).body
+                        OnboardingViewBuilder().body
                             .navigationDestination(for: AppCoordinatorPathType.self) { type in
                                 switch type {
                                 case let .onboarding(pathType):
                                     switch pathType {
                                     case .createProfile:
-                                        ProfileEditorViewBuilder(container: container).body
+                                        ProfileEditorViewBuilder(diContainer: diContainer).body
                                             .navigationBarBackButtonHidden()
                                     }
                                 }
@@ -40,19 +41,34 @@ struct FunchApp: App {
                 .overlay {
                     if isSplashing {
                         withAnimation(.easeOut) {
-                            SplashViewBuilder(container: container).body
+                            SplashViewBuilder().body
                         }
                         
                     }
                 }
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.35) {
                     isSplashing.toggle()
                 }
             }
             .environmentObject(appCoordinator)
-            .environmentObject(container)
+            .environmentObject(diContainer)
         }
+    }
+}
+
+extension FunchApp {
+    private func setupNavigationBarAppearance() {
+        let navigationBarAppearance = UINavigationBarAppearance()
+        navigationBarAppearance.configureWithOpaqueBackground()
+        navigationBarAppearance.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.gray900
+        ]
+        navigationBarAppearance.backgroundColor = UIColor.gray900
+        navigationBarAppearance.shadowColor = .clear
+        UINavigationBar.appearance().standardAppearance = navigationBarAppearance
+        UINavigationBar.appearance().compactAppearance = navigationBarAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
     }
 }

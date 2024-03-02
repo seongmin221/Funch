@@ -9,9 +9,11 @@ import SwiftUI
 
 struct ProfileEditorView: View {
     
+    @Environment(\.dismiss) var dismiss
+    
     @EnvironmentObject var appCoordinator: AppCoordinator
     @StateObject var viewModel: ProfileEditorViewModel
-    
+        
     var body: some View {
         ZStack {
             Color.gray900
@@ -65,7 +67,7 @@ struct ProfileEditorView: View {
         .onReceive(viewModel.$presentation) {
             switch $0 {
             case .home:
-                appCoordinator.paths.removeAll()
+                dismiss()
             default:
                 break
             }
@@ -73,7 +75,7 @@ struct ProfileEditorView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    appCoordinator.paths.removeLast()
+                    dismiss()
                 } label: {
                     Image(.iconArrowBack)
                         .foregroundColor(.black)

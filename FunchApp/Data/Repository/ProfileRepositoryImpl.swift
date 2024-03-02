@@ -10,17 +10,13 @@ import Moya
 import SwiftUI
 import Combine
 
-enum RepositoryError: Error {
-    case message(String)
-}
-
 /// User 본인을 기준으로 하는 repository
 final class ProfileRepositoryImpl: ProfileRepository {
     
     private let apiClient: APIClient
     
-    init() {
-        apiClient = APIClient()
+    init(apiClient: APIClient) {
+        self.apiClient = apiClient
     }
     
     /// 내 프로필 디바이스 기반 정보 조회
@@ -34,15 +30,15 @@ final class ProfileRepositoryImpl: ProfileRepository {
                 switch result {
                 case .success(let success):
                     promise(.success(success.toDomain()))
-                case .failure(let failure):
-//                    promise(.failure(failure))
+                case .failure(_):
+                    promise(.failure(.message("프로필 정보 조회를 실패했어요.")))
                     break
                 }
             }
         }.eraseToAnyPublisher()
     }
     
-    /// 쿼리 기반 프로필 생성
+    /// 내 프로필 코드 기반 정보 조회
     func fetchProfile(query: FetchUserQuery) -> AnyPublisher<Profile, RepositoryError> {
         return Future { promise in
             self.apiClient.request(
